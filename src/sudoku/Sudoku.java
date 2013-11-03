@@ -1,163 +1,177 @@
 package sudoku;
 
 import java.io.*;
-public class Sudoku implements Serializable {	
+public class Sudoku implements Serializable {
 	private int tailleGrille;
 	private int[][] grille;
-	private boolean[][] resultat;
 	private int tailleCarre;
 	private int [][]grilleDuJoueur;
-	
-	public Sudoku(int a){
-		//		grilleDuJoueur=new int[9][9];
-		tailleCarre=a;
-		tailleGrille=a*a;
+
+	public Sudoku(int a) {
+		//		grilleDuJoueur = new int[9][9];
+		tailleCarre = a;
+		tailleGrille = a*a;
 		grille = new int[a*a][a*a];
-		resultat = new  boolean[a*a][a*a];
 		initGrille();
 		genere();
-	
+
 	}
 	/*place des zero dans chaque case de la grille*/
-	private void initGrille(){
-		for (int i=0; i<tailleGrille; i++) {
-			for (int j=0; j<tailleGrille; j++) {
-				grille[i][j]=0;
+	private void initGrille() {
+		for (int i = 0; i<tailleGrille; i++) {
+			for (int j = 0; j<tailleGrille; j++) {
+				grille[i][j] = 0;
 			}
 		}
 	}
-	
-	public String toString(){
-		String local="grille: \n";
-		for (int i=0; i < 9; i++){
-			if (i%3==0)
-				local+="\n";
-			for (int j=0; j < 9; j++) {
-				if (j%3==0) {
-					local+="\t";
+
+	public String toString() {
+		String local = "grille: \n";
+		for (int i = 0; i < 9; i++) {
+			if (i%3 == 0)
+				local += "\n";
+			for (int j = 0; j < 9; j++) {
+				if (j%3 == 0) {
+					local += "\t";
 				}
-				local+=grille[i][j]+" ";
+				local += grille[i][j]+" ";
 			}
 
-			local+="\n";
+			local += "\n";
 		}
 		return local;
 	}
-	/*pour qu'un sudoku soit valide il faut que la ligne la colone et la case ne comporte pas de 
-	 chiffre en double
-	 */
-	private boolean verifLigne(int a, int ligne){
-			for (int i=0; i<tailleGrille; i++) {
-					if (grille[ligne][i]==a) 
-						return false;
+
+	/** verifie si la ligne comporte une valeur en double */
+	private boolean verifLigne(int valeur, int ligne) {
+			for (int i = 0; i<tailleGrille; i++) {
+				if (grille[ligne][i] == valeur)
+					return false;
 			}
 		return true;
 	}
-	private boolean verifColone(int a,int col){
-		for (int i=0; i<tailleGrille; i++) {
-				if (grille[i][col]== a) 
-					return false;
-					}
-			return true;
+	/** verifie si la colone comporte une valeur en double */
+	private boolean verifColone(int valeur, int col) {
+		for (int i = 0; i<tailleGrille; i++) {
+			if (grille[i][col] == valeur)
+				return false;
+		}
+		return true;
 	}
-	private boolean verifCase(int a, int carre){
-		for (int i=numDebutI(carre),cmpI=0	; cmpI < 3; cmpI++,i++ ) 
-			for (int j=numDebutJ(carre),cmpJ=0; cmpJ < 3; cmpJ++,j++ ) 
-				if (grille[i][j] == a) 
+
+	/** verifie si le carre comporte une valeur en double */
+	private boolean verifCase(int valeur, int carre){
+		for (int i = numDebutI(carre), cmpI = 0; cmpI < 3; cmpI++, i++ )
+			for (int j = numDebutJ(carre),cmpJ = 0; cmpJ < 3; cmpJ++, j++ )
+				if (grille[i][j] == valeur)
 					return false;
 		return true;
 	}
+
 	/**renvoit le numero du petit carre correspondant i,j */
-	public int quelleCase(int numLigne,int numColone){ 
+	public int quelleCase(int numLigne,int numColone) {
 		return ((numLigne/3)*3+(numColone / 3))+1;
-	}	
-	
-	public static int numDebutI(int num){ 
+	}
+
+	public static int numDebutI(int num){
 		return ((num-1) / 3)*3;
 	}
-	public static int numDebutJ(int num){	
+	public static int numDebutJ(int num){
 		return ((num-1) % 3)*3;
 	}
 	/*methode qui genere un chiffre :
-		cette methode calcul les chiffres possible que l'on peut mettre a la case grille[i][j] 
-		les stock dans un tableau puis renvois un numero au 
+		cette methode calcul les chiffres possible que l'on peut mettre a la case grille[i][j]
+		les stock dans un tableau puis renvois un numero au
 		hazard parmi le tableau*/
-	private int genere1Chiffre(int i,int j){
-		int [] valeursPossibles= new int [9];
-		int cmp=0;
-		for (int k=0; k<9; k++) {
+	private int genere1Chiffre(int i,int j) {
+		int [] valeursPossibles = new int [9];
+		int cmp = 0;
+		for (int k = 0; k<9; k++) {
 			if (verifCase(k+1, quelleCase(i, j)) && verifLigne(k+1, i) && verifColone(k+1, j)) {
-				valeursPossibles[cmp]=k+1;
+				valeursPossibles[cmp] = k+1;
 				cmp++;
 			}
 		}
-		if (cmp == 0) //aucun chiffre possible 
+		if (cmp == 0) //aucun chiffre possible
 			return 0;
-		return valeursPossibles[ (int)( ( Math.random() * cmp ) )] ;
+		return valeursPossibles[ (int)( ( Math.random() * cmp ) )];
 	}
-	
+
 	/*methode qui genere la case entiere qui porte le numero passer en parametre
 	 */
-	private void genere1Case(int cmpCase){
-		int num,cmplong=0,impossible=0;
-		int impos=0;//si boucle infini cela veut dire que la case est impossible a generer dans la grille actuelle donc va effacer la case precedente
-		for (int i = numDebutI(cmpCase),cmp=0 ; cmp < 3 ; cmp++,i++) {
-			for (int j = numDebutJ(cmpCase),cmpJ=0 ; cmpJ < 3 ; cmpJ++,j++) {
-				num=genere1Chiffre(i,j);
-				while ((verifCase(num,cmpCase) == false || verifLigne(num,i)==false || verifColone(num,j)==false)){
-					num=genere1Chiffre(i,j);
-					if (cmplong==20 || num==0) {//il y a une erreur quelque part efface la case actuelle
-						cmplong=0;
-						videCase(cmpCase);
-						i=numDebutI(cmpCase);j = numDebutJ(cmpCase);
-						cmp=0;cmpJ=0;
-					}
+	private void genere1Case(int cmpCase) {
+		int num;
+		int impossible = 0; //s'incrémente chaque fois qu'une case est effacer
+		int impos = 0; //s'incrémente chaque fois qu'une case est effacer revient à zéro lorsque l'on efface la case prècédente
+
+		for (int i = numDebutI(cmpCase),cmpI = 0 ; cmpI < 3 ; cmpI++,i++) {
+			for (int j = numDebutJ(cmpCase),cmpJ = 0 ; cmpJ < 3 ; cmpJ++,j++) {
+				num = genere1Chiffre(i,j);
+				while (num == 0) {
+					/* si le num == 0 c'est qu'il n'y aucune valeur possible pour la petite case i j
+					 * et que la case est impossible à générer
+					 * il faut donc effacer la case et la regénerer
+					 */
+					videCase(cmpCase);
+					i = numDebutI(cmpCase);
+					j = numDebutJ(cmpCase);
+					cmpI = 0; cmpJ = 0;
 					impos++;
-					if (impos > 50) {//cas ou la case actuelle est impossible a faire efface la case précédente
+
+					/* cas ou la case actuelle est impossible à générer il faut effacer la case précédente,
+					 * la valeur 15 est arbitraire
+					 */
+					if (impos > 15) {
+						System.out.println("case impossible");
 						videCase(cmpCase-1);
 						genere1Case(cmpCase-1);
-						impos=0;
-						impossible+=1;
-					}//
-					if (impossible>1000) {//cas ou la case précédente a déja été effacé trop de fois recommencer le sudoku
-						impossible=0;
-						impossible(cmpCase);
-						
+						impos = 0;
+						impossible += 1;
 					}
-					cmplong++;		//voir si cmplong sert vraiment a quelque chose ????			
-				}				
-				grille[i][j]=num;
-				resultat[i][j]=true;
+					/* cas ou la case précédente a déja été effacée trop de fois recommencer le sudoku
+					 * souvent quand il ne reste que 3 2 case à générer,
+					 * la valeur 20 est arbitraire
+					 */
+					if (impossible>20) {
+						System.out.println("sudoku impossible");
+						impossible = 0;
+						impossible(cmpCase);
+					}
+					num = genere1Chiffre(i,j);
+				}
+
+				grille[i][j] = num;
 			}
-		}		
+		}
 	}
 	/*supprime toute les case et regenere les case jusqu'a la cmpCase */
-	private void impossible(int cmpCase){
-		for (int y=1; y<cmpCase; y++) 	videCase(y);		
-		for (int y=1; y<9; y++) 	genere1Case(y);
+	private void impossible(int cmpCase) {
+		for (int y = 1; y<cmpCase; y++)
+			videCase(y);
+		for (int y = 1; y<9; y++)
+			genere1Case(y);
 	}
 	/*vide la case passer en parrametre*/
-	private void videCase(int carre){
-		for (int i = numDebutI(carre),cmp=0 ; cmp < 3 ; cmp++,i++) {
-			for (int j = numDebutJ(carre),cmpJ=0 ; cmpJ < 3 ; cmpJ++,j++){ 
-				grille[i][j]=0;
-				resultat[i][j]=false;
+	private void videCase(int carre) {
+		for (int i = numDebutI(carre),cmp = 0 ; cmp < 3 ; cmp++,i++) {
+			for (int j = numDebutJ(carre),cmpJ = 0 ; cmpJ < 3 ; cmpJ++,j++) {
+				grille[i][j] = 0;
 			}
 		}
 	}
 	/*methode qui genere une grille entiere 9*9 numero */
-	private void genere(){
-		for (int cmpCase = 1; cmpCase < 10; cmpCase+=1) {	genere1Case(cmpCase);
+	private void genere() {
+		for (int cmpCase = 1; cmpCase < 10; cmpCase += 1) {	genere1Case(cmpCase);
 		}
 	}
-	public int getChiffre(int ligne,int colone){
+	public int getChiffre(int ligne,int colone) {
 		return grille[ligne][colone];
 	}
 
 }
-class TestSudoku{
+class TestSudoku {
 	public static void main(String [] args) {
-		Sudoku sud=new	 Sudoku(3);
+		Sudoku sud = new	 Sudoku(3);
 		System.out.println(sud);
  	}
 }
