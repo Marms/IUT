@@ -3,15 +3,15 @@ package model;
 import java.io.*;
 
 import model.Sudoku;
+
 public class Sudoku implements Serializable {
-	private int tailleGrille;
+	static private int TAILLEGRILLE = 0;
+	static private int TAILLECARRE = 0;
 	protected int[][] sudoku;
-	private int tailleCarre;
 
 	public Sudoku(int a) {
-		//		grilleDuJoueur = new int[9][9];
-		tailleCarre = a;
-		tailleGrille = a*a;
+		TAILLECARRE = a;
+		TAILLEGRILLE = a*a;
 		sudoku = new int[a*a][a*a];
 		initGrille();
 		genere();
@@ -19,8 +19,8 @@ public class Sudoku implements Serializable {
 	}
 	/*place des zero dans chaque case de la grille*/
 	private void initGrille() {
-		for (int i = 0; i<tailleGrille; i++) {
-			for (int j = 0; j<tailleGrille; j++) {
+		for (int i = 0; i < TAILLEGRILLE; i++) {
+			for (int j = 0; j < TAILLEGRILLE; j++) {
 				sudoku[i][j] = 0;
 			}
 		}
@@ -28,11 +28,11 @@ public class Sudoku implements Serializable {
 
 	public String toString() {
 		String local = "grille: \n";
-		for (int i = 0; i < 9; i++) {
-			if (i%3 == 0)
+		for (int i = 0; i < TAILLEGRILLE; i++) {
+			if (i%TAILLECARRE == 0)
 				local += "\n";
-			for (int j = 0; j < 9; j++) {
-				if (j%3 == 0) {
+			for (int j = 0; j < TAILLEGRILLE; j++) {
+				if (j%TAILLECARRE == 0) {
 					local += "\t";
 				}
 				local += sudoku[i][j]+" ";
@@ -45,7 +45,7 @@ public class Sudoku implements Serializable {
 
 	/** verifie si la ligne comporte une valeur en double */
 	protected boolean verifLigne(int valeur, int ligne) {
-			for (int i = 0; i<tailleGrille; i++) {
+			for (int i = 0; i<TAILLEGRILLE; i++) {
 				if (sudoku[ligne][i] == valeur)
 					return false;
 			}
@@ -53,7 +53,7 @@ public class Sudoku implements Serializable {
 	}
 	/** verifie si la colone comporte une valeur en double */
 	protected boolean verifColone(int valeur, int col) {
-		for (int i = 0; i<tailleGrille; i++) {
+		for (int i = 0; i<TAILLEGRILLE; i++) {
 			if (sudoku[i][col] == valeur)
 				return false;
 		}
@@ -62,8 +62,8 @@ public class Sudoku implements Serializable {
 
 	/** verifie si le carre comporte une valeur en double */
 	protected boolean verifCase(int valeur, int carre){
-		for (int i = numDebutI(carre), cmpI = 0; cmpI < 3; cmpI++, i++ )
-			for (int j = numDebutJ(carre),cmpJ = 0; cmpJ < 3; cmpJ++, j++ )
+		for (int i = numDebutI(carre), cmpI = 0; cmpI < TAILLECARRE; cmpI++, i++ )
+			for (int j = numDebutJ(carre),cmpJ = 0; cmpJ < TAILLECARRE; cmpJ++, j++ )
 				if (sudoku[i][j] == valeur)
 					return false;
 		return true;
@@ -71,23 +71,23 @@ public class Sudoku implements Serializable {
 
 	/**renvoit le numero du petit carre correspondant i,j */
 	public int quelleCase(int numLigne,int numColone) {
-		return ((numLigne/3)*3+(numColone / 3))+1;
+		return ((numLigne/TAILLECARRE)*TAILLECARRE+(numColone / TAILLECARRE))+1;
 	}
 
 	public static int numDebutI(int num){
-		return ((num-1) / 3)*3;
+		return ((num-1) / TAILLECARRE)*TAILLECARRE;
 	}
 	public static int numDebutJ(int num){
-		return ((num-1) % 3)*3;
+		return ((num-1) % TAILLECARRE)*TAILLECARRE;
 	}
 	/*methode qui genere un chiffre :
 		cette methode calcul les chiffres possible que l'on peut mettre a la case grille[i][j]
 		les stock dans un tableau puis renvois un numero au
 		hazard parmi le tableau*/
 	private int genere1Chiffre(int i,int j) {
-		int [] valeursPossibles = new int [9];
+		int [] valeursPossibles = new int [TAILLEGRILLE];
 		int cmp = 0;
-		for (int k = 0; k<9; k++) {
+		for (int k = 0; k<TAILLEGRILLE; k++) {
 			if (verifCase(k+1, quelleCase(i, j)) && verifLigne(k+1, i) && verifColone(k+1, j)) {
 				valeursPossibles[cmp] = k+1;
 				cmp++;
@@ -105,8 +105,8 @@ public class Sudoku implements Serializable {
 		int impossible = 0; //s'incrémente chaque fois qu'une case est effacer
 		int impos = 0; //s'incrémente chaque fois qu'une case est effacer revient à zéro lorsque l'on efface la case prècédente
 
-		for (int i = numDebutI(cmpCase),cmpI = 0 ; cmpI < 3 ; cmpI++,i++) {
-			for (int j = numDebutJ(cmpCase),cmpJ = 0 ; cmpJ < 3 ; cmpJ++,j++) {
+		for (int i = numDebutI(cmpCase),cmpI = 0 ; cmpI < TAILLECARRE ; cmpI++,i++) {
+			for (int j = numDebutJ(cmpCase),cmpJ = 0 ; cmpJ < TAILLECARRE ; cmpJ++,j++) {
 				num = genere1Chiffre(i,j);
 				while (num == 0) {
 					/* si le num == 0 c'est qu'il n'y aucune valeur possible pour la petite case i j
@@ -123,17 +123,17 @@ public class Sudoku implements Serializable {
 					 * la valeur 15 est arbitraire
 					 */
 					if (impos > 15) {
-						System.out.println("case impossible");
+						System.out.println("case impossible\n");
 						videCase(cmpCase-1);
 						genere1Case(cmpCase-1);
-						impos = 0;
+						//impos = 0;
 						impossible += 1;
 					}
 					/* cas ou la case précédente a déja été effacée trop de fois recommencer le sudoku
 					 * souvent quand il ne reste que 3 2 case à générer,
 					 * la valeur 20 est arbitraire
 					 */
-					if (impossible>20) {
+					if (impossible>30) {
 						System.out.println("sudoku impossible");
 						impossible = 0;
 						impossible(cmpCase);
@@ -147,22 +147,23 @@ public class Sudoku implements Serializable {
 	}
 	/*supprime toute les case et regenere les case jusqu'a la cmpCase */
 	private void impossible(int cmpCase) {
-		for (int y = 1; y<cmpCase; y++)
+		cmpCase = TAILLEGRILLE;
+		for (int y = 1; y<=cmpCase; y++)
 			videCase(y);
-		for (int y = 1; y<9; y++)
+		for (int y = 1; y<TAILLEGRILLE; y++)
 			genere1Case(y);
 	}
 	/*vide la case passer en parrametre*/
 	private void videCase(int carre) {
-		for (int i = numDebutI(carre),cmp = 0 ; cmp < 3 ; cmp++,i++) {
-			for (int j = numDebutJ(carre),cmpJ = 0 ; cmpJ < 3 ; cmpJ++,j++) {
+		for (int i = numDebutI(carre),cmp = 0 ; cmp < TAILLECARRE ; cmp++,i++) {
+			for (int j = numDebutJ(carre),cmpJ = 0 ; cmpJ < TAILLECARRE ; cmpJ++,j++) {
 				sudoku[i][j] = 0;
 			}
 		}
 	}
 	/*methode qui genere une grille entiere 9*9 numero */
 	private void genere() {
-		for (int cmpCase = 1; cmpCase < 10; cmpCase += 1) {	genere1Case(cmpCase);
+		for (int cmpCase = 1; cmpCase <= TAILLEGRILLE; cmpCase += 1) {	genere1Case(cmpCase);
 		}
 	}
 	public int getChiffre(int ligne,int colone) {
@@ -173,7 +174,7 @@ public class Sudoku implements Serializable {
 
 class TestSudoku {
 	public static void main(String [] args) {
-		Sudoku sud = new	 Sudoku(3);
+		Sudoku sud = new	 Sudoku(4);
 		System.out.println(sud);
  	}
 }
