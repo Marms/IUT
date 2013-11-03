@@ -1,17 +1,18 @@
-package model;
+package vue;
 
 import javax.swing.*;
 
-import model.Bcorrige;
-import model.Bgenere;
-import model.Bquite;
-import model.Bretablir;
-import model.Bsauvegarder;
-import model.Btext;
-import model.Casse;
-import model.FenetreMenu;
-import model.FenetreSudo;
-import model.Ok;
+import vue.Bcorrige;
+import vue.Bgenere;
+import vue.Bquite;
+import vue.Bretablir;
+import vue.Bsauvegarder;
+import vue.Btext;
+import vue.Casse;
+import vue.FenetreMenu;
+import vue.FenetreSudo;
+import vue.Ok;
+
 import model.SudokuARemplir;
 
 import java.awt.*;
