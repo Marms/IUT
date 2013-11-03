@@ -46,23 +46,23 @@ public class Sudoku implements Serializable {
 	/*pour qu'un sudoku soit valide il faut que la ligne la colone et la case ne comporte pas de 
 	 chiffre en double
 	 */
-	private boolean verifLigne(int a, int ligne) {
+	private boolean verifLigne(int a, int ligne){
 			for (int i=0; i<tailleGrille; i++) {
-					if (grille[ligne][i] == a) 
+					if (grille[ligne][i]==a) 
 						return false;
 			}
 		return true;
 	}
-	private boolean verifColone(int a, int col) {
-		for ( int i=0; i<tailleGrille; i++ ) {
-				if ( grille[i][col] == a ) 
+	private boolean verifColone(int a,int col){
+		for (int i=0; i<tailleGrille; i++) {
+				if (grille[i][col]== a) 
 					return false;
-		}
-		return true;
+					}
+			return true;
 	}
-	private boolean verifCase( int a, int carre ) {
-		for (int i = numDebutI(carre), cmpI = 0	; cmpI < 3; cmpI++, i++ ) 
-			for (int j = numDebutJ(carre), cmpJ = 0; cmpJ < 3; cmpJ++, j++ ) 
+	private boolean verifCase(int a, int carre){
+		for (int i=numDebutI(carre),cmpI=0	; cmpI < 3; cmpI++,i++ ) 
+			for (int j=numDebutJ(carre),cmpJ=0; cmpJ < 3; cmpJ++,j++ ) 
 				if (grille[i][j] == a) 
 					return false;
 		return true;
@@ -81,29 +81,19 @@ public class Sudoku implements Serializable {
 	/*methode qui genere un chiffre :
 		cette methode calcul les chiffres possible que l'on peut mettre a la case grille[i][j] 
 		les stock dans un tableau puis renvois un numero au 
-									hazard parmi le tableau*/
+		hazard parmi le tableau*/
 	private int genere1Chiffre(int i,int j){
-		int [] valeurPossible = new int [9], ne;
-		int cmp = 0, num;
-		//place dans un tableau les valeurs possible et incrément le compteur de 1 a chaque fois.
-		//la vérification ce fais en regardans successivement la case la ligne et les colone. (peut être peut t'on amméliorrer ça.
+		int [] valeursPossibles= new int [9];
+		int cmp=0;
 		for (int k=0; k<9; k++) {
 			if (verifCase(k+1, quelleCase(i, j)) && verifLigne(k+1, i) && verifColone(k+1, j)) {
-				valeurPossible[cmp]=k+1;
+				valeursPossibles[cmp]=k+1;
 				cmp++;
 			}
 		}
-		if (cmp == 0) {//aucun chiffre possible 
-			return cmp;
-		}/*
-		//placement dans un tableau de la bonne taille les valeurs possible puis en tire un au hazard.
-		ne= new int [cmp];
-		for (int k=0; k<cmp; k++) 
-			ne[k]=valeurPossible[k];
-		num =(int)((Math.random()*(cmp)));
-
-	return ne[num];*/
-		return valeurPossible[(int)((Math.random()*(cmp)))];
+		if (cmp == 0) //aucun chiffre possible 
+			return 0;
+		return valeursPossibles[ (int)( ( Math.random() * cmp ) )] ;
 	}
 	
 	/*methode qui genere la case entiere qui porte le numero passer en parametre
