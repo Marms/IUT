@@ -99,10 +99,10 @@ class FenetreSudo extends JFrame implements Serializable{
 		int c;
 		for (int i=0; i<9; i++) {
 			for (int j=0; j<9; j++) {
-				c=s1.qCase(i, j);
+				c=s1.quelleCase(i, j);
 				p2=ChoixCase(c);
 				if(s1.getVisible(i,j)){//quand getVisible()retourne vrai placement dans la case d'une zone de texte non modifiable
-					c=s1.qCase(i, j);
+					c=s1.quelleCase(i, j);
 					 
 					p2.add(new JLabel(s1.getValeur(i, j)));
 					p2.setOpaque(true);

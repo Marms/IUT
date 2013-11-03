@@ -3,15 +3,14 @@ package sudoku;
 import java.io.*;
 public class Sudoku implements Serializable {
 	private int tailleGrille;
-	private int[][] grille;
+	protected int[][] sudoku;
 	private int tailleCarre;
-	private int [][]grilleDuJoueur;
 
 	public Sudoku(int a) {
 		//		grilleDuJoueur = new int[9][9];
 		tailleCarre = a;
 		tailleGrille = a*a;
-		grille = new int[a*a][a*a];
+		sudoku = new int[a*a][a*a];
 		initGrille();
 		genere();
 
@@ -20,7 +19,7 @@ public class Sudoku implements Serializable {
 	private void initGrille() {
 		for (int i = 0; i<tailleGrille; i++) {
 			for (int j = 0; j<tailleGrille; j++) {
-				grille[i][j] = 0;
+				sudoku[i][j] = 0;
 			}
 		}
 	}
@@ -34,7 +33,7 @@ public class Sudoku implements Serializable {
 				if (j%3 == 0) {
 					local += "\t";
 				}
-				local += grille[i][j]+" ";
+				local += sudoku[i][j]+" ";
 			}
 
 			local += "\n";
@@ -43,27 +42,27 @@ public class Sudoku implements Serializable {
 	}
 
 	/** verifie si la ligne comporte une valeur en double */
-	private boolean verifLigne(int valeur, int ligne) {
+	protected boolean verifLigne(int valeur, int ligne) {
 			for (int i = 0; i<tailleGrille; i++) {
-				if (grille[ligne][i] == valeur)
+				if (sudoku[ligne][i] == valeur)
 					return false;
 			}
 		return true;
 	}
 	/** verifie si la colone comporte une valeur en double */
-	private boolean verifColone(int valeur, int col) {
+	protected boolean verifColone(int valeur, int col) {
 		for (int i = 0; i<tailleGrille; i++) {
-			if (grille[i][col] == valeur)
+			if (sudoku[i][col] == valeur)
 				return false;
 		}
 		return true;
 	}
 
 	/** verifie si le carre comporte une valeur en double */
-	private boolean verifCase(int valeur, int carre){
+	protected boolean verifCase(int valeur, int carre){
 		for (int i = numDebutI(carre), cmpI = 0; cmpI < 3; cmpI++, i++ )
 			for (int j = numDebutJ(carre),cmpJ = 0; cmpJ < 3; cmpJ++, j++ )
-				if (grille[i][j] == valeur)
+				if (sudoku[i][j] == valeur)
 					return false;
 		return true;
 	}
@@ -140,7 +139,7 @@ public class Sudoku implements Serializable {
 					num = genere1Chiffre(i,j);
 				}
 
-				grille[i][j] = num;
+				sudoku[i][j] = num;
 			}
 		}
 	}
@@ -155,7 +154,7 @@ public class Sudoku implements Serializable {
 	private void videCase(int carre) {
 		for (int i = numDebutI(carre),cmp = 0 ; cmp < 3 ; cmp++,i++) {
 			for (int j = numDebutJ(carre),cmpJ = 0 ; cmpJ < 3 ; cmpJ++,j++) {
-				grille[i][j] = 0;
+				sudoku[i][j] = 0;
 			}
 		}
 	}
@@ -165,10 +164,11 @@ public class Sudoku implements Serializable {
 		}
 	}
 	public int getChiffre(int ligne,int colone) {
-		return grille[ligne][colone];
+		return sudoku[ligne][colone];
 	}
 
 }
+
 class TestSudoku {
 	public static void main(String [] args) {
 		Sudoku sud = new	 Sudoku(3);

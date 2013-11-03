@@ -59,8 +59,9 @@ public class SudokuProf{
 					else return false;
 				}
 			}
-		}return true;
-		}	
+		}
+		return true;
+	}	
 	public boolean estValide(){
 	 for (int i=0; i<9; i++) {
 		 if (!est1PetitCarreValide(i))		
