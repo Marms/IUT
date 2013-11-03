@@ -1,4 +1,4 @@
-package sudoku;
+package model;
 /**Cette class ne sert qu'a corriger le sudoku 
  * J'aurais très bien pu mettre cela dans la class SudokuARemplir */
 

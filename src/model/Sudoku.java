@@ -1,6 +1,8 @@
-package sudoku;
+package model;
 
 import java.io.*;
+
+import model.Sudoku;
 public class Sudoku implements Serializable {
 	private int tailleGrille;
 	protected int[][] sudoku;

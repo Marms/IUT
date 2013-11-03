@@ -1,8 +1,10 @@
-package sudoku;
+package model;
 
 import java.io.*;
+
+import model.Correction;
 import travail.Saisie;
-import sudoku.Correction;
+import model.Sudoku;
 
 public class SudokuARemplir extends Sudoku implements Serializable {
 	private int[][] grilleJouer;
