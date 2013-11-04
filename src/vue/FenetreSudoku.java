@@ -2,59 +2,24 @@ package vue;
 
 import javax.swing.*;
 
-import vue.Bcorrige;
-import vue.Bgenere;
-import vue.Bquite;
-import vue.Bretablir;
-import vue.Bsauvegarder;
+import vue.corrigeListener;
+import vue.sauvegarderListener;
 import vue.Btext;
 import vue.Casse;
-import vue.FenetreMenu;
 import vue.FenetreSudo;
-import vue.Ok;
+import vue.OkListener;
 
 import model.GrilleGamer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
-/*affiche le bouton genere, charger et quiter*/
-class FenetreMenu extends JFrame {
-	protected JTextField[][] champ;
-	private JButton b_genere, b_quitte, b_retablir; 
-
-	/*genere une fenetre avec 2 boutons "generer" et "quitter" */
-	public FenetreMenu(){
-		setTitle("Menu Sudoku");
-		Container cf = this.getContentPane(); 
-		
-		JPanel p3= new JPanel();
-		p3.setLayout(new FlowLayout(FlowLayout.RIGHT) );
-		
-		b_genere = new JButton("Generer");
-		b_quitte = new JButton("Quitter");
-		b_retablir = new JButton("Charger");
-		p3.add(b_genere);
-		p3.add(b_quitte);
-		p3.add(b_retablir);
-		cf.add("South", p3);
-		Bretablir b0 = new Bretablir();
-		b_retablir.addActionListener((ActionListener) b0);
-		Bgenere b1 = new Bgenere();
-		b_genere.addActionListener(b1);
-		Bquite b2 = new Bquite();
-		b_quitte.addActionListener(b2);
-
-	}
-}
 /**/
 
 class FenetreSudo extends JFrame implements Serializable{	
@@ -65,19 +30,12 @@ class FenetreSudo extends JFrame implements Serializable{
 	/*renvoit la case correspondant au numero c passer en parametre*/
 	private	JPanel ChoixCase(int c){
 		if (c==1) 	return pC1;
-		
 		if (c==2) 	return pC2;
-		
 		if (c==3) 	return pC3;
-		
 		if (c==4) 	return pC4;
-		
 		if (c==5) 	return pC5;
-		
 		if (c==6) 	return pC6;
-		
 		if (c==7) 	return pC7;
-		
 		if (c==8) 	return pC8;
 		return pC9;
 	}
@@ -146,15 +104,15 @@ class FenetreSudo extends JFrame implements Serializable{
 		
 		JPanel p3=new JPanel();//ajout des bouton 
 		b_corrige=new JButton("corriger");
-		Bcorrige corige=new Bcorrige(s1);
+		corrigeListener corige=new corrigeListener(s1);
 		b_corrige.addActionListener(corige);
 		
 		sauvegarde= new JButton("sauvegarde");
-		Bsauvegarder sss=new Bsauvegarder(s1);
+		sauvegarderListener sss=new sauvegarderListener(s1);
 		sauvegarde.addActionListener(sss);
 		
 		b_ok=new JButton("OK");//Creation du bouton
-		Ok o=new Ok();//Creation de l'evenement
+		OkListener o=new OkListener();//Creation de l'evenement
 		b_ok.addActionListener(o);//association du bouton a l'evenement
 		
 		p3.add(sauvegarde);
@@ -177,72 +135,21 @@ class FenetreSudo extends JFrame implements Serializable{
 }
 
 //------------------------------------------------------------
-//------------------- BOUTON FENETRE MENU --------------------
-//------------------------------------------------------------
-
-/*ne sert a rien */
-class paneau extends JPanel{
-	public void paintcomponent(Graphics g){
-		g.drawRect(10, 10, 50, 50);
-		g.fillRect(65, 65, 30, 40);
-	}
-}
-
-/*quitte le programme reprend la main dans le terminal*/
-class Bquite implements ActionListener{
-	public void actionPerformed(ActionEvent e){
-		System.out.println("fin par bouton quitte");
-		System.exit(0);
-	}
-}
-
-/*instancie une fentreSudo et la rend visible*/
-class Bgenere implements ActionListener{//pour fenetreMenu 
-	public FenetreSudo f2;//amodifier 
-	public void actionPerformed(ActionEvent e){
-		
-		f2 = new FenetreSudo();
-		f2.pack();
-		f2.setVisible(true);
-		//while (true) 
-		//	System.out.println(""+f2.s1);
-		
-		
-	}
-}
-//
-class Bretablir implements ActionListener{
-	private GrilleGamer sudo;
-	
-	public void actionPerformed(ActionEvent e){
-		try{
-			FileInputStream f = new FileInputStream("Sudoku.sdku");
-			ObjectInputStream s = new ObjectInputStream(f);
-			sudo= (GrilleGamer) s.readObject();
-			FenetreSudo f1 = new FenetreSudo(sudo);
-			f1.pack();
-			f1.setVisible(true);
-			
-		}catch (IOException a) {System.out.println("nouveau Fichier");}
-		catch (ClassNotFoundException b) {System.out.println("probleme");}
-	}
-}
-//------------------------------------------------------------
 //------------------- BOUTON FENETRE SUDOKU ------------------
 //------------------------------------------------------------
 
 //serialise l'objet sudokuAremplir pour pouvoir le charger dans fenetreMenu
-class Bsauvegarder implements ActionListener{
-	private GrilleGamer sudo;
+class sauvegarderListener implements ActionListener{
+	private GrilleGamer s1;
 	private java.io.ObjectOutputStream s;
 	private java.io.FileOutputStream f;
 	
-	public Bsauvegarder(GrilleGamer sAr){ sudo=sAr;}
+	public sauvegarderListener(GrilleGamer sAr){ s1=sAr;}
 	public void actionPerformed(ActionEvent e){
 		try {
 			f = new FileOutputStream("Sudoku.sdku");
 			s = new ObjectOutputStream(f);
-			s.writeObject(sudo);
+			s.writeObject(s1);
 			s.flush();
 			s.close();
 			f.close();
@@ -254,12 +161,13 @@ class Bsauvegarder implements ActionListener{
 	}
 }
 /*ne fait rien pour l'instant*/
-class Bcorrige implements ActionListener{
-	private GrilleGamer ss;
-	public Bcorrige(GrilleGamer s){
-		ss=s;}
+class corrigeListener implements ActionListener{
+	private GrilleGamer s1;
+	public corrigeListener(GrilleGamer s){
+		s1=s;}
+	@Override
 	public void actionPerformed(ActionEvent e){
-		if(ss.verifGrille()) 
+		if(s1.verifGrille())
 			System.out.println("grille true ");
 		else 
 			System.out.println("grille false ");
@@ -267,7 +175,8 @@ class Bcorrige implements ActionListener{
 }
 //
 /*ne fait rien pour l'instant*/
-class Ok implements ActionListener{
+class OkListener implements ActionListener{
+	@Override
 	public void actionPerformed(ActionEvent e){
 		System.out.println("t'as appuyer sur OK ");}
 }
@@ -304,15 +213,4 @@ class Btext implements ActionListener {
 		//	return t;
 	}
 }
-//
-//------------------------------------------------------------
-//------------------------- Class test  ----------------------
-//------------------------------------------------------------
 
-public class FenetreSudoku{
-	 public static void main(String [] args) {
-		 FenetreMenu f1 = new FenetreMenu();
-		 f1.pack();
-		 f1.setVisible(true);
-		 	}
-}
