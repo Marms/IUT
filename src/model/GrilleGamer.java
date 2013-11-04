@@ -2,16 +2,16 @@ package model;
 
 import java.io.*;
 
-import model.Correction;
+import model.Corrector;
 import travail.Saisie;
-import model.Sudoku;
+import model.GeneratorSudoku;
 
-public class SudokuARemplir extends Sudoku implements Serializable {
+public class GrilleGamer extends GeneratorSudoku implements Serializable {
 	private int[][] grilleJouer;
 	private boolean resul[][];//sert pour savoir si une case est vide
 	private boolean visible[][];//sert pour afficher les cases visible
 
-	public SudokuARemplir() {
+	public GrilleGamer() {
 		super(3);
 		grilleJouer = new int [9][9];
 		resul = new  boolean[9][9];
@@ -88,7 +88,7 @@ public class SudokuARemplir extends Sudoku implements Serializable {
 		}
 	}
 	public boolean verifGrille(){
-		Correction corr = new Correction(grilleJouer);
+		Corrector corr = new Corrector(grilleJouer);
 		System.out.println(this);
 		return corr.estValide();
 	}
@@ -97,7 +97,7 @@ public class SudokuARemplir extends Sudoku implements Serializable {
 class Main {
 	public static void main(String [] args) {
 		int i,j,val;
-		SudokuARemplir sar1 = new SudokuARemplir();
+		GrilleGamer sar1 = new GrilleGamer();
 		System.out.println(""+sar1);
 		while (true) {
 			i = Saisie.lireInt("entrer ligne: ");

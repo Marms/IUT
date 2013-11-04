@@ -2,14 +2,14 @@ package model;
 
 import java.io.*;
 
-import model.Sudoku;
+import model.GeneratorSudoku;
 
-public class Sudoku implements Serializable {
+public class GeneratorSudoku implements Serializable {
 	static private int NBCARREGRILLE = 0;
 	static private int NBCARRE = 0;
 	protected int[][] sudoku;
 
-	public Sudoku(int nbCarre) {
+	public GeneratorSudoku(int nbCarre) {
 		NBCARRE = nbCarre;
 		NBCARREGRILLE = nbCarre*nbCarre;
 		sudoku = new int[nbCarre*nbCarre][nbCarre*nbCarre];
@@ -174,7 +174,7 @@ public class Sudoku implements Serializable {
 
 class TestSudoku {
 	public static void main(String [] args) {
-		Sudoku sud = new Sudoku(4);
+		GeneratorSudoku sud = new GeneratorSudoku(4);
 		System.out.println(sud);
  	}
 }

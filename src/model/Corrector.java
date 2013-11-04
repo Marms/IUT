@@ -2,11 +2,11 @@ package model;
 /**Cette class ne sert qu'a corriger le sudoku 
  * J'aurais très bien pu mettre cela dans la class SudokuARemplir */
 
-public class Correction {
+public class Corrector {
 
 	private int [][] grille;
 //================CONSTRUCTEUR========================
-	public Correction(int [][] g){	
+	public Corrector(int [][] g){	
 		grille=g;	
 	}
 	

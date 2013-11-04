@@ -13,7 +13,7 @@ import vue.FenetreMenu;
 import vue.FenetreSudo;
 import vue.Ok;
 
-import model.SudokuARemplir;
+import model.GrilleGamer;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -59,7 +59,7 @@ class FenetreMenu extends JFrame {
 
 class FenetreSudo extends JFrame implements Serializable{	
 	private JButton b_corrige,b_ok, sauvegarde;
-	public SudokuARemplir s1;
+	public GrilleGamer s1;
 	private JPanel pC1,pC2,pC3,pC4,pC5,pC6,pC7,pC8,pC9;
 	
 	/*renvoit la case correspondant au numero c passer en parametre*/
@@ -83,11 +83,11 @@ class FenetreSudo extends JFrame implements Serializable{
 	}
 	
 	public FenetreSudo(){
-		s1=new SudokuARemplir();
+		s1=new GrilleGamer();
 		initFenetre();
 	}
 
-	public FenetreSudo(SudokuARemplir s){
+	public FenetreSudo(GrilleGamer s){
 		s1=s;
 		initFenetre();
 	}
@@ -212,13 +212,13 @@ class Bgenere implements ActionListener{//pour fenetreMenu
 }
 //
 class Bretablir implements ActionListener{
-	private SudokuARemplir sudo;
+	private GrilleGamer sudo;
 	
 	public void actionPerformed(ActionEvent e){
 		try{
 			FileInputStream f = new FileInputStream("Sudoku.sdku");
 			ObjectInputStream s = new ObjectInputStream(f);
-			sudo= (SudokuARemplir) s.readObject();
+			sudo= (GrilleGamer) s.readObject();
 			FenetreSudo f1 = new FenetreSudo(sudo);
 			f1.pack();
 			f1.setVisible(true);
@@ -233,11 +233,11 @@ class Bretablir implements ActionListener{
 
 //serialise l'objet sudokuAremplir pour pouvoir le charger dans fenetreMenu
 class Bsauvegarder implements ActionListener{
-	private SudokuARemplir sudo;
+	private GrilleGamer sudo;
 	private java.io.ObjectOutputStream s;
 	private java.io.FileOutputStream f;
 	
-	public Bsauvegarder(SudokuARemplir sAr){ sudo=sAr;}
+	public Bsauvegarder(GrilleGamer sAr){ sudo=sAr;}
 	public void actionPerformed(ActionEvent e){
 		try {
 			f = new FileOutputStream("Sudoku.sdku");
@@ -255,8 +255,8 @@ class Bsauvegarder implements ActionListener{
 }
 /*ne fait rien pour l'instant*/
 class Bcorrige implements ActionListener{
-	private SudokuARemplir ss;
-	public Bcorrige(SudokuARemplir s){
+	private GrilleGamer ss;
+	public Bcorrige(GrilleGamer s){
 		ss=s;}
 	public void actionPerformed(ActionEvent e){
 		if(ss.verifGrille()) 
@@ -274,10 +274,10 @@ class Ok implements ActionListener{
 // casse et btext vont ensemble
 // possibilité de suprimmer case pour le remplacer par une simple methode
 class Casse{
-	private SudokuARemplir s;
+	private GrilleGamer s;
 	private int i,j;
 	private JTextField text;
-	public Casse(int ii,int jj,SudokuARemplir ss){
+	public Casse(int ii,int jj,GrilleGamer ss){
 		i=ii;j=jj;s=ss;
 		text=new JTextField(1);
 		Btext b = new Btext(text,ss,i,j);
@@ -292,9 +292,9 @@ class Casse{
 }
 class Btext implements ActionListener {
 	private JTextField t;
-	private SudokuARemplir s;
+	private GrilleGamer s;
 	private int i,j;
-	public Btext(JTextField tt,SudokuARemplir ss,int ii,int jj){i=ii;j=jj;t=tt;s=ss;}
+	public Btext(JTextField tt,GrilleGamer ss,int ii,int jj){i=ii;j=jj;t=tt;s=ss;}
 	
 	public void actionPerformed(ActionEvent e){
 		//faire en sorte que l'on ne peux pas entrer autre que 1 2 3 4 5  6 7 8 9 
