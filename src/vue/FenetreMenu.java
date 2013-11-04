@@ -76,7 +76,6 @@ import model.GrilleGamer;
 			catch (ClassNotFoundException b) {System.out.println("probleme");}
 		}
 	}
-
 }
 	//------------------------------------------------------------
 	//------------------------- Class test  ----------------------

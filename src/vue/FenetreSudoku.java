@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**/
@@ -21,112 +23,89 @@ import java.io.Serializable;
 class FenetreSudo extends JFrame implements Serializable{	
 	private JButton b_corrige,b_ok, sauvegarde;
 	public GrilleGamer s1;
-	private JPanel pC1,pC2,pC3,pC4,pC5,pC6,pC7,pC8,pC9;
-	
-	/*renvoit la case correspondant au numero c passer en parametre*/
-	private	JPanel ChoixCase(int c){
-		if (c==1) 	return pC1;
-		if (c==2) 	return pC2;
-		if (c==3) 	return pC3;
-		if (c==4) 	return pC4;
-		if (c==5) 	return pC5;
-		if (c==6) 	return pC6;
-		if (c==7) 	return pC7;
-		if (c==8) 	return pC8;
-		return pC9;
-	}
-	
+	private List<JPanel> pC;//sert à rien pour l'instant
+
 	public FenetreSudo(){
 		s1=new GrilleGamer();
+		initAttr();
 		initFenetre();
 	}
 
 	public FenetreSudo(GrilleGamer s){
 		s1=s;
+		initAttr();
 		initFenetre();
 	}
-	
+
+	public void initAttr(){
+		this.pC = new ArrayList<JPanel>();
+		this.b_corrige=new JButton("corriger");
+		this.b_ok=new JButton("OK");
+		this.sauvegarde= new JButton("sauvegarde");
+	}
+
 	public void initFenetre(){
 		setTitle("Sudoku");
-		Container cf= this.getContentPane();
+		Container container=this.getContentPane();
 
 		//Creation d'un "tableau" de 3*3 cases pour mettre les 9 cases dedans
-		GridLayout grille1=new GridLayout(3,3);
-		JPanel pgrille =new JPanel();
-		pgrille.setLayout(grille1);
-		//creation des 9 cases du Sudoku puis des bordures 
+		GridLayout layoutGrille=new GridLayout(3,3);
+		JPanel grillePanel=new JPanel();
+		grillePanel.setLayout(layoutGrille);
 
-		pC1=petitCarre(); pC2=petitCarre(); pC3=petitCarre(); pC4=petitCarre(); pC5=petitCarre();
-		pC6=petitCarre(); pC7=petitCarre(); pC8=petitCarre(); pC9=petitCarre();
-		
-		setBorder(pC1);setBorder(pC2);setBorder(pC3);setBorder(pC4);setBorder(pC5);
-		setBorder(pC6);setBorder(pC7);setBorder(pC8);setBorder(pC9);
-		//
-		
-		JPanel p2;
-		int c;
-		for (int i=0; i<9; i++) {
-			for (int j=0; j<9; j++) {
-				c=s1.quelleCase(i, j);
-				p2=ChoixCase(c);
-				if(s1.getVisible(i,j)){//quand getVisible()retourne vrai placement dans la case d'une zone de texte non modifiable
-					c=s1.quelleCase(i, j);
-					 
-					p2.add(new JLabel(s1.getValeur(i, j)));
-					p2.setOpaque(true);
-					
-					if (c==1||c==5||c==9||c==7||c==3) 
-						p2.setBackground(Color.GRAY);
-				}else{ 
-					JTextField zoneDeTexte= new Casse(i,j,s1).retour();
-					if (s1.getResul(i, j)) {
-						zoneDeTexte.setText(s1.getValeur(i, j));
-					}
-					p2.add(zoneDeTexte);
-				}
-			}
+		//generation des grandes cases une par une
+		for (int cmp=0; cmp<9; cmp++){
+			JPanel carre =carrePanel(cmp);
+			pC.add(carre);
+			grillePanel.add(pC.get(cmp));
 		}
-		pgrille.add(pC1);
-		pgrille.add(pC2);
-		pgrille.add(pC3);
-		pgrille.add(pC4);
-		pgrille.add(pC5);
-		pgrille.add(pC6);
-		pgrille.add(pC7);
-		pgrille.add(pC8);
-		pgrille.add(pC9);
 
-		cf.add("Center", pgrille);
-		
-		JPanel p3=new JPanel();//ajout des bouton 
-		b_corrige=new JButton("corriger");
-		corrigeListener corige=new corrigeListener();
-		b_corrige.addActionListener(corige);
-		
-		sauvegarde= new JButton("sauvegarde");
-		sauvegarderListener sss=new sauvegarderListener();
-		sauvegarde.addActionListener(sss);
-		
-		b_ok=new JButton("OK");//Creation du bouton
-		OkListener o=new OkListener();//Creation de l'evenement
-		b_ok.addActionListener(o);//association du bouton a l'evenement
-		
-		p3.add(sauvegarde);
-		p3.add(b_corrige);
-		p3.add(b_ok);//ajout du bouton a la suite du paneau
-		cf.add("South",p3);
+		//association des boutons aux evenements
+		sauvegarde.addActionListener(new sauvegarderListener());
+		b_corrige.addActionListener(new corrigeListener());
+		b_ok.addActionListener(new OkListener());
+
+		JPanel boutonPanel=new JPanel();
+		boutonPanel.add(sauvegarde);
+		boutonPanel.add(b_corrige);
+		boutonPanel.add(b_ok);
+
+		container.add("Center", grillePanel);
+		container.add("South",boutonPanel);
 	}
-	public void setBorder(JPanel g){
+
+	public void setBorderCarre(JPanel g){
 		g.setBorder(BorderFactory.createCompoundBorder(
 				BorderFactory.createEmptyBorder(0, 0, 0, 0),
 				BorderFactory.createLineBorder(Color.BLACK, 1)	)
-			);
+		);
 	}
-	public JPanel petitCarre(){
-		JPanel pC=new JPanel();
-		GridLayout c1=new GridLayout(3,3);
-		pC.setLayout(c1);
-		return pC;
+
+	/** Renvois un JPanel avec un GridLayout 3*3
+	 **/
+
+	public JPanel carrePanel(int cmp){
+		JPanel carre=new JPanel();
+		carre.setLayout(new GridLayout(3,3));
+		//generation des cases contenu dans le panelCarre
+		for (int i=0; i<3; i++) {
+			for (int j=0; j<3; j++){
+				String val = s1.getValeur(i+(3*(cmp/3)),j+(3*(cmp%3)));
+
+				if(val.compareTo("0") > 0){	//si valeur > 0 la case est découverte
+					carre.add(new JLabel(val));
+					carre.setOpaque(true);
+
+					if (cmp %2 != 0)
+						carre.setBackground(Color.GRAY);
+				}else{
+					JTextField zoneDeTexte= new Casse(i,j,s1).retour();//simplifier en ne donnant pas s1????
+					carre.add(zoneDeTexte);
+				}
+			}
+		}
+		setBorderCarre(carre);
+		return carre;
 	}
 
 //------------------------------------------------------------
@@ -168,7 +147,6 @@ class FenetreSudo extends JFrame implements Serializable{
 			}
 		}
 	}
-
 }
 
 //
@@ -178,12 +156,13 @@ class Casse{
 	private GrilleGamer s;
 	private int i,j;
 	private JTextField text;
+
 	public Casse(int ii,int jj,GrilleGamer ss){
 		i=ii;j=jj;s=ss;
 		text=new JTextField(1);
 		TextListener b = new TextListener(text,ss,i,j);
 		text.addActionListener(b);
-		
+
 	}
 	/*retourne une zone de texte qui est lier a une case i,j
 	 de l'objet ss de type sudokuARemplir  */
@@ -196,7 +175,7 @@ class TextListener implements ActionListener {
 	private GrilleGamer s;
 	private int i,j;
 	public TextListener(JTextField tt,GrilleGamer ss,int ii,int jj){i=ii;j=jj;t=tt;s=ss;}
-	
+
 	public void actionPerformed(ActionEvent e){
 		//faire en sorte que l'on ne peux pas entrer autre que 1 2 3 4 5  6 7 8 9 
 		int res= Integer.parseInt(t.getText());
@@ -205,4 +184,3 @@ class TextListener implements ActionListener {
 		//	return t;
 	}
 }
-
