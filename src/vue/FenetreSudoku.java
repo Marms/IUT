@@ -2,12 +2,8 @@ package vue;
 
 import javax.swing.*;
 
-import vue.corrigeListener;
-import vue.sauvegarderListener;
-import vue.Btext;
 import vue.Casse;
 import vue.FenetreSudo;
-import vue.OkListener;
 
 import model.GrilleGamer;
 
@@ -104,11 +100,11 @@ class FenetreSudo extends JFrame implements Serializable{
 		
 		JPanel p3=new JPanel();//ajout des bouton 
 		b_corrige=new JButton("corriger");
-		corrigeListener corige=new corrigeListener(s1);
+		corrigeListener corige=new corrigeListener();
 		b_corrige.addActionListener(corige);
 		
 		sauvegarde= new JButton("sauvegarde");
-		sauvegarderListener sss=new sauvegarderListener(s1);
+		sauvegarderListener sss=new sauvegarderListener();
 		sauvegarde.addActionListener(sss);
 		
 		b_ok=new JButton("OK");//Creation du bouton
@@ -132,54 +128,50 @@ class FenetreSudo extends JFrame implements Serializable{
 		pC.setLayout(c1);
 		return pC;
 	}
-}
 
 //------------------------------------------------------------
-//------------------- BOUTON FENETRE SUDOKU ------------------
+//------------------------- Listener -------------------------
 //------------------------------------------------------------
+	class OkListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			System.out.println("t'as appuyer sur OK ");
+		}
+	}
 
-//serialise l'objet sudokuAremplir pour pouvoir le charger dans fenetreMenu
-class sauvegarderListener implements ActionListener{
-	private GrilleGamer s1;
-	private java.io.ObjectOutputStream s;
-	private java.io.FileOutputStream f;
-	
-	public sauvegarderListener(GrilleGamer sAr){ s1=sAr;}
-	public void actionPerformed(ActionEvent e){
-		try {
-			f = new FileOutputStream("Sudoku.sdku");
-			s = new ObjectOutputStream(f);
-			s.writeObject(s1);
-			s.flush();
-			s.close();
-			f.close();
-			System.out.println("Grille Sauvegarder");
-		}
-		catch (IOException ioe) {
-			System.out.println("ERREUR IO : "+ioe);
+	/*ne fait rien pour l'instant*/
+	class corrigeListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			if(s1.verifGrille())
+				System.out.println("grille true ");
+			else
+				System.out.println("grille false ");
 		}
 	}
-}
-/*ne fait rien pour l'instant*/
-class corrigeListener implements ActionListener{
-	private GrilleGamer s1;
-	public corrigeListener(GrilleGamer s){
-		s1=s;}
-	@Override
-	public void actionPerformed(ActionEvent e){
-		if(s1.verifGrille())
-			System.out.println("grille true ");
-		else 
-			System.out.println("grille false ");
+
+	//serialise l'objet sudokuAremplir pour pouvoir le charger dans fenetreMenu
+	class sauvegarderListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e){
+			try {
+				java.io.FileOutputStream  f = new FileOutputStream("Sudoku.sdku");
+				java.io.ObjectOutputStream s = new ObjectOutputStream(f);
+				s.writeObject(s1);
+				s.flush();
+				s.close();
+				f.close();
+				System.out.println("Grille Sauvegarder");
+			}
+			catch (IOException ioe) {
+				System.out.println("ERREUR IO : "+ioe);
+			}
+		}
 	}
+
 }
+
 //
-/*ne fait rien pour l'instant*/
-class OkListener implements ActionListener{
-	@Override
-	public void actionPerformed(ActionEvent e){
-		System.out.println("t'as appuyer sur OK ");}
-}
 // casse et btext vont ensemble
 // possibilité de suprimmer case pour le remplacer par une simple methode
 class Casse{
@@ -189,7 +181,7 @@ class Casse{
 	public Casse(int ii,int jj,GrilleGamer ss){
 		i=ii;j=jj;s=ss;
 		text=new JTextField(1);
-		Btext b = new Btext(text,ss,i,j);
+		TextListener b = new TextListener(text,ss,i,j);
 		text.addActionListener(b);
 		
 	}
@@ -199,11 +191,11 @@ class Casse{
 		return text;
 	}
 }
-class Btext implements ActionListener {
+class TextListener implements ActionListener {
 	private JTextField t;
 	private GrilleGamer s;
 	private int i,j;
-	public Btext(JTextField tt,GrilleGamer ss,int ii,int jj){i=ii;j=jj;t=tt;s=ss;}
+	public TextListener(JTextField tt,GrilleGamer ss,int ii,int jj){i=ii;j=jj;t=tt;s=ss;}
 	
 	public void actionPerformed(ActionEvent e){
 		//faire en sorte que l'on ne peux pas entrer autre que 1 2 3 4 5  6 7 8 9 
