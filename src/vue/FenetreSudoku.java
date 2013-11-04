@@ -73,13 +73,6 @@ class FenetreSudo extends JFrame implements Serializable{
 		container.add("South",boutonPanel);
 	}
 
-	public void setBorderCarre(JPanel g){
-		g.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(0, 0, 0, 0),
-				BorderFactory.createLineBorder(Color.BLACK, 1))
-		);
-	}
-
 	/***/
 	public JPanel carrePanel(int cmp){
 		JPanel carre=new JPanel();
@@ -87,8 +80,10 @@ class FenetreSudo extends JFrame implements Serializable{
 		//generation des cases contenu dans le panelCarre
 		for (int i=0; i<3; i++) {
 			for (int j=0; j<3; j++){
-				String val = game.getValeur(i+(3*(cmp/3)),j+(3*(cmp%3)));
+				int x = i+(3*(cmp/3));
+				int y = j+(3*(cmp%3));
 
+				String val = game.getValeur(x, y);
 				if(val.compareTo("0") > 0){	//si valeur > 0 la case est découverte
 					carre.add(new JLabel(val));
 					carre.setOpaque(true);
@@ -97,12 +92,15 @@ class FenetreSudo extends JFrame implements Serializable{
 						carre.setBackground(Color.GRAY);
 				}else{
 					JTextField zoneDeTexte= new JTextField(1);
-					zoneDeTexte.addActionListener(new TextListener(zoneDeTexte, i, j));
+					zoneDeTexte.addActionListener(new TextListener(zoneDeTexte, x, y));
 					carre.add(zoneDeTexte);
 				}
 			}
 		}
-		setBorderCarre(carre);
+		carre.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(0, 0, 0, 0),
+				BorderFactory.createLineBorder(Color.BLACK, 1))
+		);
 		return carre;
 	}
 
