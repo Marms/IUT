@@ -8,58 +8,58 @@ import model.GeneratorSudoku;
 
 public class GrilleGamer extends GeneratorSudoku implements Serializable {
 	private int[][] grilleJouer;
-	private boolean resul[][];//sert pour savoir si une case est vide
-	private boolean visible[][];//sert pour afficher les cases visible
 
 	public GrilleGamer() {
 		super(3);
-		grilleJouer = new int [9][9];
-		resul = new  boolean[9][9];
-		visible = new boolean[9][9];
+		initAttr();
+	}
+
+	public GrilleGamer(int nb) {
+		super(4);
+		initAttr();
+	}
+
+	public void initAttr(){
+		grilleJouer = new int[NBCARREGRILLE][NBCARREGRILLE];
 		initGrilleJouer(4);
-		initVisible();
+
 	}
 
 //------------------------------------------------ METHODE PRIVEE -----------------
 	private void initGrilleJouer(int a) {
 		int ligne, colone, i = 0,min;
-		for (int z = 0; z < 9; z++) {
+		for (int z = 0; z < NBCARREGRILLE; z++) {
 			do {
 				min = numDebutI(z + 1);
-				ligne = (int)(Math.random()*3) + min;
+				ligne = (int)(Math.random()*NBCARRE) + min;
 				min = numDebutJ(z+1);
-				colone = (int)(Math.random()*3) + min;
-			if (!resul[ligne][colone]) {
+				colone = (int)(Math.random()*NBCARRE) + min;
+				if (grilleJouer[ligne][colone]==0) {	
 					i++;
-				grilleJouer[ligne][colone] = getChiffre(ligne, colone);
-				resul[ligne][colone] = true;
-			}}while (i<a);
+					grilleJouer[ligne][colone] = getChiffre(ligne, colone);
+				}
+				}while (i<a);
 			i = 0;
 		}
 	}
 
-	private void initVisible() {
-		for (int i = 0; i < 9; i++) 
-			for (int j = 0; j < 9; j++) 
-				if (resul[i][j]) 
-					visible[i][j] = true;
-	}
-
 	public String toString() {
 		String local = "grille\n\t  0  1  2  3  4  5  6  7  8\n";
-		for (int i = 0; i<9; i++) {if (i%3 == 0) local += " \t ---------------------------\n";
+		for (int i = 0; i < NBCARREGRILLE; i++) {
+			if (i % NBCARRE == 0)
+				local += " \t ---------------------------\n";
 			local += i+"\t";
-			for (int j = 0; j < 9; j++) {
-				if (j%3 == 0) {
+			for (int j = 0; j < NBCARREGRILLE; j++) {
+				if (j%NBCARRE == 0) {
 					local += " | ";
-					if (j == 8) 
+					if (j == NBCARREGRILLE-1)
 						local += "\t"+j;
 				}
-					
-				if (resul[i][j])
-					local += grilleJouer[i][j]+" ";
-				else {
+
+				if (grilleJouer[i][j] == 0)
 					local += "  ";
+				else {
+					local += " " + grilleJouer[i][j];
 				}
 
 			}
@@ -69,22 +69,20 @@ public class GrilleGamer extends GeneratorSudoku implements Serializable {
 	}
 
 //------------------------------------------------------------- ACESSEURS -----------------
-	public boolean getVisible(int i, int j) {
-		return visible[i][j];
-	}
-	public boolean getResul(int i, int j) {
-		return resul[i][j];
-	}
 	public String getValeur(int i, int j) {
 		String local = ""+grilleJouer[i][j];
 		return local;
 	}
-
+	public int getTaille() {
+		return NBCARRE;
+	}
+	public int getTailleTotal() {
+		return NBCARREGRILLE;
+	}
 	/***/
 	public void setGrille(int i, int j, int valeur) {
-		if (i <= 9 && j <= 9 && i >= 0 && j >= 0) {
+		if (i <= NBCARREGRILLE && j <= NBCARREGRILLE && i >= 0 && j >= 0) {
 			grilleJouer[i][j] = valeur;
-			resul[i][j] = true;
 		}
 	}
 	public boolean verifGrille(){
