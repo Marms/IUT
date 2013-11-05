@@ -5,8 +5,8 @@ import java.io.*;
 import model.GeneratorSudoku;
 
 public class GeneratorSudoku implements Serializable {
-	static private int NBCARREGRILLE = 0;
-	static private int NBCARRE = 0;
+	static protected int NBCARREGRILLE = 0;
+	static protected int NBCARRE = 0;
 	protected int[][] sudoku;
 
 	public GeneratorSudoku(int nbCarre) {
