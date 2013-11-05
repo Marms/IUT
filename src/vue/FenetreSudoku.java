@@ -16,16 +16,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**/
-
 class FenetreSudo extends JFrame implements Serializable{	
 	private JButton b_corrige,b_ok, sauvegarde;
 	public GrilleGamer game;
-	private List<JPanel> listCarre;//sert à rien pour l'instant
+	private List<JPanel> listCarre; //sert à rien pour l'instant
+	private static int TAILLE_SUDOKU, TAILLE_CARRE; //TAILLE_SUDOKU = TAILLE_CARRE * TAILLE_CARRE (max < 5)
 
 	public FenetreSudo(){
-		game=new GrilleGamer();
+		game=new GrilleGamer(1);
 		initAttr();
 		initFenetre();
 	}
@@ -41,6 +39,8 @@ class FenetreSudo extends JFrame implements Serializable{
 		this.b_corrige=new JButton("corriger");
 		this.b_ok=new JButton("OK");
 		this.sauvegarde= new JButton("sauvegarde");
+		this.TAILLE_SUDOKU = game.getTailleTotal();
+		this.TAILLE_CARRE = game.getTaille();
 	}
 
 	public void initFenetre(){
@@ -48,12 +48,12 @@ class FenetreSudo extends JFrame implements Serializable{
 		Container container=this.getContentPane();
 
 		//Creation d'un "tableau" de 3*3 cases pour mettre les cases dedans
-		GridLayout layoutGrille=new GridLayout(3,3);
+		GridLayout layoutGrille=new GridLayout(TAILLE_CARRE, TAILLE_CARRE);
 		JPanel grillePanel=new JPanel();
 		grillePanel.setLayout(layoutGrille);
 
 		//generation des grandes cases une par une
-		for (int cmp=0; cmp<9; cmp++){
+		for (int cmp=0; cmp<TAILLE_SUDOKU; cmp++){
 			JPanel carre =carrePanel(cmp);
 			listCarre.add(carre);
 			grillePanel.add(listCarre.get(cmp));
@@ -76,12 +76,12 @@ class FenetreSudo extends JFrame implements Serializable{
 	/***/
 	public JPanel carrePanel(int cmp){
 		JPanel carre=new JPanel();
-		carre.setLayout(new GridLayout(3,3));
+		carre.setLayout(new GridLayout(TAILLE_CARRE, TAILLE_CARRE));
 		//generation des cases contenu dans le panelCarre
-		for (int i=0; i<3; i++) {
-			for (int j=0; j<3; j++){
-				int x = i+(3*(cmp/3));
-				int y = j+(3*(cmp%3));
+		for (int i=0; i<TAILLE_CARRE; i++) {
+			for (int j=0; j<TAILLE_CARRE; j++){
+				int x = i+(TAILLE_CARRE*(cmp/TAILLE_CARRE));
+				int y = j+(TAILLE_CARRE*(cmp%TAILLE_CARRE));
 
 				String val = game.getValeur(x, y);
 				if(val.compareTo("0") > 0){	//si valeur > 0 la case est découverte
@@ -91,7 +91,7 @@ class FenetreSudo extends JFrame implements Serializable{
 					if (cmp %2 != 0)
 						carre.setBackground(Color.GRAY);
 				}else{
-					JTextField zoneDeTexte= new JTextField(1);
+					JTextField zoneDeTexte= new JTextField(2);//sert a rien ???
 					zoneDeTexte.addActionListener(new TextListener(zoneDeTexte, x, y));
 					carre.add(zoneDeTexte);
 				}
@@ -103,7 +103,6 @@ class FenetreSudo extends JFrame implements Serializable{
 		);
 		return carre;
 	}
-
 	//------------------------- Listeners -------------------------
 
 	class OkListener implements ActionListener{
